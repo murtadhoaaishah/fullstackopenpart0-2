@@ -1,5 +1,4 @@
 
-const App = () => {
     const Hello = () => {
         return (
           <div>
