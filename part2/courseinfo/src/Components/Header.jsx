@@ -1,9 +1,10 @@
 import React from 'react'
 
-function Header({ head }) {
+function Header({ head1, head2 }) {
   return (
     <div>
-      <h1>{head}</h1>
+      <h2>{head1}</h2>
+      <h2>{head2}</h2>
     </div >
   )
 }
