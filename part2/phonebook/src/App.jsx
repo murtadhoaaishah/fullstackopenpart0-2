@@ -2,35 +2,45 @@ import React, { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+
   ])
   const [newName, setNewName] = useState('')
-  const [showAll, setShowAll] = useState(true)
+  // const [showAll, setShowAll] = useState(true)
 
-  const namesToShow = showAll
-    ? persons.filter(persons => persons.important === true)
-    : persons
+  // const namesToShow = showAll
+  //   ? persons.filter(persons => persons.important === true)
+  //   : persons
 
-  newName.includes({ newName }) === true
-    ? alert('${newName} has been added to phonebook')
-    : namesToShow
+  // const namesToShow = persons
+
+  // if (namesToShow.includes(newName)) {
+  //   alert('${newName} has been added to phonebook')
+  // }
+  const findName = persons.find(person => person.names === newName)
+
+
 
   const addName = e => {
     e.preventDefault()
     const namesObject = {
       names: newName,
-      important: Math.random() < 0.5,
       id: persons.length + 1
     }
+    if (findName) {
+      alert(`${findName.names} already exist`)
+      setNewName('')
+      return
+    }
     setPersons(persons.concat(namesObject))
+    setNewName('')
   }
 
+
   const handleNameChange = e => {
-    console.log(e.target.value)
     setNewName(e.target.value)
   }
 
-  console.log(namesToShow)
+  // console.log(persons)
   return (
     <div>
       <h2>Phonebook</h2>
@@ -48,7 +58,7 @@ const App = () => {
 
       </form>
       <h2>Numbers</h2>
-      {namesToShow.map((person, i) =>
+      {persons.map((person, i) =>
         <p key={i}>{person.names}</p>)}
 
     </div >
