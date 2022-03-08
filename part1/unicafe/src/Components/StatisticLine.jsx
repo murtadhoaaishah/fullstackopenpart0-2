@@ -1,20 +1,5 @@
-import React from 'react'
+const StatisticLine = ({ text, value }) => {
 
-function StatisticLine(props) {
-   console.log(StatisticLine) 
-
-  return (
-
-    <tbody>
-      <tr>
-        <td>{props.text}</td>
-         <td>{props.value}</td>
-      </tr>
-</tbody>
-              
-      
-    
-  )
+  return <tr>{text}   {value}</tr>
 }
-
 export default StatisticLine

@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 
 const App = () => {
+
+
   const anecdotes = [
     'If it hurts, do it more often',
     'Adding manpower to a late software project makes it later!',
@@ -11,38 +13,38 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients'
   ]
 
-
   const [selected, setSelected] = useState(0)
   const [vote, setVote] = useState(Array(anecdotes.length).fill(0))
-  console.log(selected)
 
-  const maxVote = Math.max(...vote)
-  const highestVoteIndex = vote.indexOf(maxVote)
-  const winner = anecdotes[highestVoteIndex]
 
   const handleVote = () => {
+
+
     const copy = [...vote]
     copy[selected] += 1
-    console.log(copy)
     setVote(copy)
-
   }
+  let maxVote = Math.max(...vote)
+  let indexOfMaxVote = vote.indexOf(maxVote)
 
+
+  const handleAnecdote = () => {
+    const randomAnecdote = Math.floor(Math.random() * anecdotes.length)
+    setSelected(randomAnecdote)
+  }
   return (
     <div>
-      <h2>Anecdote of the day</h2>
-      <p>{anecdotes[selected]}</p>
-      <p>has {vote[selected]} vote</p>
+      <h1>Anecdote of the day</h1>
+      <p>{anecdotes[selected]}   has {vote[selected]} votes </p>
+      <button onClick={handleAnecdote}>next anecdote</button>
       <button onClick={handleVote}>vote</button>
-      <button onClick={() => setSelected((Math.floor(Math.random() * anecdotes.length)))}>next anecdote</button>
 
-      <h2>Anecdote with most vote</h2>
-      <p>{winner}</p>
-      <p>has  {maxVote}  vote
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[indexOfMaxVote]} has {maxVote}</p>
 
-      </p>
     </div>
   )
+
 }
 
 export default App

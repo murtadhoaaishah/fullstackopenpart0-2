@@ -1,68 +1,97 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import PersonForm from './components/PersonForm'
+import Filter from './components/Filter'
+import Persons from './components/Persons'
+// import axios from 'axios'
+import createService from './components/Crude'
+
 
 const App = () => {
   const [persons, setPersons] = useState([
-
+    // { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    // { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    // { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    // { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
   ])
   const [newName, setNewName] = useState('')
-  // const [showAll, setShowAll] = useState(true)
+  const [newNumber, setNumber] = useState('')
+  const [query, setQuery] = useState('')
 
-  // const namesToShow = showAll
-  //   ? persons.filter(persons => persons.important === true)
-  //   : persons
+  // const contact = [...persons]
+  useEffect(() => {
+    createService.getAll().then(response => {
+      setPersons(response)
+    })
+  }, [])
 
-  // const namesToShow = persons
+  const addContact = (e) => {
 
-  // if (namesToShow.includes(newName)) {
-  //   alert('${newName} has been added to phonebook')
-  // }
-  const findName = persons.find(person => person.names === newName)
-
-
-
-  const addName = e => {
     e.preventDefault()
-    const namesObject = {
-      names: newName,
-      id: persons.length + 1
+    if (!newName.trim()) return
+    if (!newNumber.trim()) return
+
+
+    const newUser = {
+      name: newName,
+      number: newNumber
     }
-    if (findName) {
-      alert(`${findName.names} already exist`)
+
+    const findPerson = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
+    const findNumber = persons.find(person => person.number === newNumber)
+
+    if (findPerson) {
+      alert(`${findPerson.name} already`)
       setNewName('')
+      setNumber('')
       return
     }
-    setPersons(persons.concat(namesObject))
+
+    if (findNumber) {
+      alert(`${findNumber.number} already`)
+      setNewName('')
+      setNumber('')
+      return
+    }
+
+    // if (findNumber) {
+    //   console.log(findNumber)
+    //   return
+    // }
+
+    setPersons(persons.concat(newUser))
+    createService.create(newUser)
     setNewName('')
+    setNumber('')
+
+
   }
+  // if (persons.find(person =>
+  //   person.name === newName.toLowerCase())) return alert('name already exist')
+  // if (persons.find(person =>
+  //   person.number === newNumber)) return alert('number already exist')
+
+  const filtered = query.trim()
+    ? persons.filter(person =>
+      person.name.toLowerCase()
+        .includes(query.trim().toLowerCase()))
+    : persons
 
 
-  const handleNameChange = e => {
-    setNewName(e.target.value)
-  }
-
-  // console.log(persons)
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addName}  >
-        <div>
-          name: <input value={newName}
+      <Filter query={query} setQuery={setQuery} />
 
-            onChange={handleNameChange}
-          />
-        </div>
-        <div>
-          <button type="submit">add</button>
-
-        </div>
-
-      </form>
+      <PersonForm
+        onSubmit={addContact}
+        setNewName={setNewName}
+        newName={newName}
+        setNumber={setNumber}
+        newNumber={newNumber}
+      />
       <h2>Numbers</h2>
-      {persons.map((person, i) =>
-        <p key={i}>{person.names}</p>)}
-
+      {persons && <Persons filtered={filtered} />}
     </div >
   )
 }
-
 export default App
