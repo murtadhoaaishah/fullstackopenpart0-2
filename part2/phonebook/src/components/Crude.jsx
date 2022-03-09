@@ -12,8 +12,16 @@ const create = (contact) => {
     return request.then(response => response.data)
 }
 
-const update = (contact, id) => {
-    const request = axios.put(`${url}${id}`, contact)
+const update = (id, msg) => {
+    // console.log(id, msg)
+    const request = axios.put(`${url}/${id}`, msg)
     return request.then(response => response.data)
 }
-export default { getAll, create, update }
+
+const remove = (id) => {
+    const request = axios.delete(`${url}/${id}`)
+    return request.then(response => response.data)
+}
+export default { getAll, create, update, remove }
+
+
