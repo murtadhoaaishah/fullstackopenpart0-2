@@ -98,6 +98,8 @@ import PersonForm from './components/PersonForm'
 import Filter from './components/Filter'
 import Persons from './components/Persons'
 import createService from './components/Crude'
+import Alert from './components/AlertNotification'
+import Error from './components/ErrorNotification'
 
 
 const App = () => {
@@ -105,7 +107,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNumber] = useState('')
   const [query, setQuery] = useState('')
-
+  const [alertMessage, setAlertMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
 
   useEffect(() => {
@@ -113,6 +116,8 @@ const App = () => {
       setPersons(response)
     })
   }, [])
+
+
 
   const addContact = e => {
 
@@ -130,14 +135,31 @@ const App = () => {
     if (findPerson) {
       window.confirm(`${findPerson.name} has been added to phonebook, do you want to replace it with a new one?`)
       createService.update(findPerson.id, { ...findPerson, number: newNumber })
-        .then(res => setPersons(persons.map(person => person.id === findPerson.id ? res : person)))
+        .then(res => setPersons(persons.map(person => person.id === findPerson.id ? res : person)),
+          setAlertMessage(`${newName} has been added`),
+          setTimeout(() =>
+            setAlertMessage(null), 5000)
+        ).catch(error => {
+          setErrorMessage(
+            `Note ${newName} has been removed from server`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
       setNewName('')
       setNumber('')
     } else {
-      createService.create(newUser)
-      setPersons(persons.concat(newUser))
+
+      createService.create(newUser).then(result => {
+        setAlertMessage(`${result.name} has been added`)
+        setTimeout(() =>
+          setAlertMessage(null), 5000)
+        setPersons(persons.concat(result))
+      })
       setNewName('')
       setNumber('')
+
     }
   }
 
@@ -158,6 +180,8 @@ const App = () => {
 
   return (
     <div>
+      <Alert message={alertMessage} />
+      <Error message={errorMessage} />
       <h2>Phonebook</h2>
       <Filter query={query} setQuery={setQuery} />
 
@@ -168,6 +192,7 @@ const App = () => {
         setNumber={setNumber}
         newNumber={newNumber}
       />
+
       <h2>Numbers</h2>
       {persons && <Persons filtered={filtered}
         deleteHandler={deleteHandler}
